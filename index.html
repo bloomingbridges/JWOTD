@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>☀</title>
+		<meta charset="UTF-8" />
+		<meta name="author" content="Florian Br&uuml;ckner" />
+		<link rel="stylesheet" media="screen" href="css/default.css" /> 
+		<meta name = "viewport" content = "initial-scale = 1.0">
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1-beta1/jquery.min.js"></script>
+		<script>
+			if(localStorage.theme){
+				$('link').attr('href', 'css/' + localStorage.theme + '.css');
+			}
+			else {
+				localStorage.theme = "default";
+			}
+		</script>
+		<script src="js/app.js"></script>
+	</head>
+	<body>
+		<div id="container">
+			<h2 id="kanji">笑顔</h2>
+			<p id="pronunciation">
+				<span id="kana">えがお</span><br />
+				<span id="romaji">egao</span>
+			</p>
+			<h3 id="meaning">smiling face</h3>
+		</div>
+		<div id="footer">
+			<p>brought to you by <br /><a href="http://www.kanji-a-day.com">Kanji A Day</a><br />and these wonderful people<br /><a href="http://www.bloomingbridges.co.uk/">@bloomingbridges</a><br /><a href="http://lostwith.me/">@sorakasumi</a></br /><a href="http://twitter.com/spllr">@spllr</a></p>
+			<hr />
+			<p>Choose a different theme:
+				<ul id="themes">
+					<li><a href="css/default.css" id="default">traditional</a></li>
+					<li><a href="css/herokuesque.css" id="herokuesque">herokuesque</a></li>
+					<li><a href="css/jetgrindradio.css" id="jetgrindradio">shibuyaterminal</a></li>
+					<li><a href="css/lostwiththeclouds.css" id="lostwiththeclouds">lostwiththeclouds</a></li>
+					<li><a href="css/bloomingbridges.css" id="bloomingbridges">bloomingbridges</a></li>
+					<li><a href="css/bloomingbridges2k14.css" id="bloomingbridges2k14">bloomingbridges2k14</a></li>
+					<li><a href="css/salmon.css" id="salmon">smørrebrød</a></li>
+					<li><a href="css/adventuretime.css" id="adventuretime">ooo</a></li>
+				</ul>
+			</p>
+			<div id="handle">✳</div>
+		</div>
+	</body>
+</html>
+      
