@@ -7,3 +7,9 @@ A beautiful browser homepage for students of the Japanese language
 [Hosted version](http://bloomingbridges.github.io/JWOTD/index.html)
 
 [More info](http://bloomingbridges.co.uk/portfolio/jwotd/index.html)
+
+## TO DO
+
+- Remove jQuery dependency
+- Adapt _ApplicationCache_ manifest to allow for offline viewing
+- Figure out a way of automatically writing all available themes to the template and manifest using Grunt
