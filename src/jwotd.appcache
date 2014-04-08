@@ -1,0 +1,18 @@
+CACHE MANIFEST
+# 2012-07-20:
+
+# Explicitly cached 'master entries'.
+CACHE:
+index.html
+css/default.css
+css/herokuesque.css
+css/bloomingbridges.css
+js/app.js
+
+# Resources that require the user to be online.
+NETWORK:
+index.html
+js/main.js
+
+# Serve alternatives
+FALLBACK:
