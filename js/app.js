@@ -1,72 +1,91 @@
 (function() {
-  var Word, setWordTo;
+  var $word_of_the_day, Word, bindUIHandlers, fetchLatestWord, isUpToDate, setWordTo;
 
   Word = (function() {
-    function Word(date) {
-      this.date = date;
-      console.log(this.date);
+    function Word() {
+      this.date = new Date();
     }
+
+    Word.prototype.parse = function(item) {
+      this.kana = item.title;
+      this.date = new Date(item.pubDate);
+      this.kanji = /kanji:\s<a.*>(.*)<\/a>/gi.exec(item.description)[1];
+      this.romaji = /romaji: (.*)</.exec(item.description)[1];
+      return this.meaning = /definition: (.*)</gi.exec(item.description)[1];
+    };
+
+    Word.prototype.store = function() {
+      localStorage.setItem('lastUpdate', this.date);
+      return localStorage.setItem('word', JSON.stringify(this));
+    };
 
     return Word;
 
   })();
 
+  $word_of_the_day = new Word();
+
   $(function() {
-    var word_of_the_day;
-    word_of_the_day = new Word(new Date());
-    if (localStorage.date) {
-      console.log("Existing: " + localStorage.meaning + " - " + localStorage.date + " - " + navigator.onLine);
-      word_of_the_day = localStorage;
-      setWordTo(word_of_the_day);
-    }
-    console.log("Checking for new word..");
-    $.getJSON("http://pipes.yahoo.com/pipes/pipe.run?_id=8b43c55269d587214112bc421c1e4711&_render=json&_callback=?", function(data) {
-      var item, _i, _len, _ref, _results;
-      console.log(data);
-      _ref = data.value.items;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        item = _ref[_i];
-        word_of_the_day.kana = item.title;
-        word_of_the_day.date = item.pubDate;
-        word_of_the_day.kanji = /kanji:\s<a.*>(.*)<\/a>/gi.exec(item.description)[1];
-        word_of_the_day.romaji = /romaji: (.*)</.exec(item.description)[1];
-        word_of_the_day.meaning = /definition: (.*)/gi.exec(item.description)[1];
-        break;
+    if (localStorage.getItem('word')) {
+      $word_of_the_day = JSON.parse(localStorage.getItem('word'));
+      console.log("EXISTING: " + $word_of_the_day.meaning + " - " + $word_of_the_day.date);
+      setWordTo($word_of_the_day);
+      if (!isUpToDate(new Date($word_of_the_day.date), new Date())) {
+        fetchLatestWord();
       }
-      return _results;
-    }, setWordTo(word_of_the_day), console.log("INCOMING:", word_of_the_day), $('#container').addClass('woosh')).error(function() {
-      console.log("timeout?");
-      return $('#container').addClass('woosh');
-    });
+    } else {
+      fetchLatestWord();
+    }
+    bindUIHandlers();
+    return $('#container').addClass('woosh');
+  });
+
+  bindUIHandlers = function() {
     $('#kanji').click(function(event) {
       $('#container, #kanji').addClass('selected');
       $('#pronunciation').css('height', '48px');
-      $('#footer').addClass('woosh');
-      return $('#handle').click(function(event) {
-        return $('#footer').toggleClass('reveal');
-      });
+      return $('#footer').addClass('woosh');
+    });
+    $('#handle').click(function(event) {
+      return $('#footer').toggleClass('reveal');
     });
     $('a#' + localStorage.theme).parent('li').addClass('current');
     return $('ul#themes li a').click(function(event) {
       event.preventDefault();
       $('ul#themes li').removeClass('current');
       $('link').attr('href', event.target.href);
-      localStorage.theme = event.target.id;
+      localStorage.setItem('theme', event.target.id);
       return $(event.target).parent('li').addClass('current');
     });
-  });
+  };
+
+  isUpToDate = function(lastPubDate, currentDate) {
+    return lastPubDate.getDate() === currentDate.getDate();
+  };
+
+  fetchLatestWord = function() {
+    var request;
+    if (navigator.onLine) {
+      console.log("CHECKING FOR NEW WORD..");
+      request = $.getJSON("http://pipes.yahoo.com/pipes/pipe.run?_id=8b43c55269d587214112bc421c1e4711&_render=json&_callback=?");
+      request.success(function(data) {
+        $word_of_the_day.parse(data.value.items[0]);
+        $word_of_the_day.store();
+        return setWordTo($word_of_the_day);
+      });
+      return request.error(function() {
+        return console.log("### ERROR - COULD NOT ACCESS FEED");
+      });
+    } else {
+      return console.log("### OFFLINE MODE");
+    }
+  };
 
   setWordTo = function(wotd) {
     $('#kanji').html(wotd.kanji);
     $('#kana').html(wotd.kana);
     $('#romaji').html(wotd.romaji);
-    $('#meaning').html(wotd.meaning);
-    localStorage.date = wotd.date;
-    localStorage.kanji = wotd.kanji;
-    localStorage.kana = wotd.kana;
-    localStorage.romaji = wotd.romaji;
-    return localStorage.meaning = wotd.meaning;
+    return $('#meaning').html(wotd.meaning);
   };
 
 }).call(this);
