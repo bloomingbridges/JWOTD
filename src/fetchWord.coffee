@@ -12,27 +12,36 @@ class Word
 
   store: ->
     localStorage.setItem 'lastUpdate', @date
-    localStorage.setItem 'word', JSON.stringify(@)
+    localStorage.setItem 'word', JSON.stringify
+      kana: @kana
+      date: @date
+      kanji: @kanji
+      romaji: @romaji
+      meaning: @meaning
 
 
-$word_of_the_day = new Word()
+word = new Word()
 
 $ ->
 
   # console.log "AppCache status: " + window.applicationCache.status
 
   if localStorage.getItem 'word'
-    $word_of_the_day = JSON.parse localStorage.getItem('word')
-    console.log "EXISTING: " + $word_of_the_day.meaning + " - " + $word_of_the_day.date
-    setWordTo $word_of_the_day
-    if !isUpToDate(new Date($word_of_the_day.date), new Date())
+    cached = JSON.parse localStorage.getItem('word')
+    word.date = cached.date;
+    word.kana = cached.kana;
+    word.kanji = cached.kanji;
+    word.romaji = cached.romaji;
+    word.meaning = cached.meaning; 
+    console.log "EXISTING: #{word.meaning} - #{word.date}"
+    setWordTo word
+    if !isUpToDate(new Date(word.date), new Date())
       fetchLatestWord()
   else
     fetchLatestWord()
 
   bindUIHandlers()
   $('#container').addClass('woosh')
-
 
 
 bindUIHandlers = ->
@@ -54,11 +63,9 @@ bindUIHandlers = ->
     $(event.target).parent('li').addClass('current')
 
 
-
 isUpToDate = (lastPubDate, currentDate) ->
   # console.log lastPubDate.getDate(), currentDate.getDate()
   return lastPubDate.getDate() is currentDate.getDate()
-
 
 
 fetchLatestWord = ->
@@ -67,15 +74,15 @@ fetchLatestWord = ->
     request = $.getJSON "http://pipes.yahoo.com/pipes/pipe.run?_id=8b43c55269d587214112bc421c1e4711&_render=json&_callback=?"
     request.success (data) ->
       # console.log "INCOMING FEED:", data
-      $word_of_the_day.parse data.value.items[0]
-      $word_of_the_day.store()
-      setWordTo $word_of_the_day
+      console.log "INCOMING WORD:", data.value.items[0].title
+      word.parse data.value.items[0]
+      word.store()
+      setWordTo word
     request.error ->
       console.log "### ERROR - COULD NOT ACCESS FEED"
   else
     console.log "### OFFLINE MODE"
   
-
 
 setWordTo = (wotd) ->
   $('#kanji').html wotd.kanji
