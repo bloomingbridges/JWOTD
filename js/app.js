@@ -101,8 +101,9 @@
   };
 
   isUpToDate = function(lastPubDate, currentDate) {
-    console.log(lastPubDate.getDate(), currentDate.getDate());
-    return lastPubDate.getDate() === currentDate.getDate();
+    console.log("CACHED " + lastPubDate.getFullYear() + " - " + lastPubDate.getDate() + " - " + lastPubDate.getMonth());
+    console.log("TODAY: " + currentDate.getFullYear() + " - " + currentDate.getDate() + " - " + currentDate.getMonth());
+    return lastPubDate.getDate() === currentDate.getDate() && lastPubDate.getDate() === currentDate.getDate() && lastPubDate.getMonth() === currentDate.getMonth();
   };
 
 }).call(this);
