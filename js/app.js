@@ -27,6 +27,7 @@
         request = $.getJSON("http://pipes.yahoo.com/pipes/pipe.run?_id=8b43c55269d587214112bc421c1e4711&_render=json&_callback=?");
         request.success((function(_this) {
           return function(data) {
+            console.log("INCOMING FEED:", data);
             console.log("INCOMING WORD:", data.value.items[0].title);
             _this.parse(data.value.items[0], false);
             _this.store();
@@ -100,6 +101,7 @@
   };
 
   isUpToDate = function(lastPubDate, currentDate) {
+    console.log(lastPubDate.getDate(), currentDate.getDate());
     return lastPubDate.getDate() === currentDate.getDate();
   };
 
