@@ -11,5 +11,6 @@ A beautiful browser homepage for students of the Japanese language
 ## TO DO
 
 - Remove jQuery dependency
+- Investigate what's up with the feed not updating regularly..
 - Adapt _ApplicationCache_ manifest to allow for offline viewing
 - Figure out a way of automatically writing all available themes to the template and manifest using Grunt

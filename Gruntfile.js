@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         coffee: {
             compile: {            
                 files: {
-                    'build/js/app.js': 'src/fetchWord.coffee',
+                    'build/js/app.js': 'src/fetchWord.coffee'
                 }
             }
         },
